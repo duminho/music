@@ -6,15 +6,15 @@ import java.sql.ResultSet;
 
 public class Mp3DAO {
 	DBConnectionMgr mgr;
-	Mp3DTO dto2 = null;
+	MemberDTO dto2 = null;
 	
 	public Mp3DAO() {
 		mgr = DBConnectionMgr.getInstance();		
 	}
 	
-	public Mp3DTO select() {
+	public MemberDTO select() {
 		
-		Mp3DTO dto = new Mp3DTO();
+		MemberDTO dto = new MemberDTO();
 		
 		//1,2단계를 해주는 DBconnectionMgr 객체 필요
 		DBConnectionMgr mgr = DBConnectionMgr.getInstance();
@@ -30,7 +30,7 @@ public class Mp3DAO {
 		//4단계 sql문 전달 요청
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()) {
-			dto = new Mp3DTO();
+			dto = new MemberDTO();
 			int num = rs.getInt(1);
 			String title = rs.getString(2);
 			String artist = rs.getString(3);

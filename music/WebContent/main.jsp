@@ -1,5 +1,12 @@
-<%@page import="bean.Mp3DTO"%>
+
+<%@page import="java.util.ArrayList"%>
+<%@page import="bean.MemberDTO"%>
 <%@page import="bean.Mp3DAO"%>
+<%@page import="org.jsoup.Jsoup"%>
+<%@page import="org.jsoup.nodes.Document"%>
+<%@page import="org.jsoup.nodes.Element"%>
+<%@page import="org.jsoup.select.Elements"%>
+<%@page import="java.io.IOException"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -16,13 +23,7 @@
 		crossorigin="anonymous"></script>
 	</head>
 	<body>
-		<jsp:useBean id="dto" class="bean.Mp3DTO"></jsp:useBean>
-		<jsp:setProperty property="*" name="dto"/>
-		<%
-			Mp3DAO dao = new Mp3DAO();
-			Mp3DTO dto2 = dao.select();
-			
-		%>
+		
 		<div id = "top">
 			<div id = "title">
 			</div>
@@ -83,16 +84,27 @@
 				<h5>인기 검색어</h5>
 				<br>
 				<ol>
-					<li>구로점</li>
-					<li>구로점 폐쇄</li>
-					<li>구내 식당</li>
-					<li>노량진역</li>
-					<li>노량진 롯데리아</li>
-					<li>노량진 지점</li>
-					<li>한국 에콰도르</li>
-					<li>이강인</li>
-					<li>이광연</li>
-					<li>김정은</li>
+					<% 
+						
+						String url = "https://www.genie.co.kr/chart/top200";
+						Document doc = null;
+						try {
+							doc = Jsoup.connect(url).get();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+			
+						String rank = null;
+						Elements element = doc.select("div.aside_realtime");//인기 검색어
+						
+						for(Element el : element.select("li > a")){
+							rank = el.text();
+							
+					%>
+						<li><a href="지니.jsp?search=<%= rank %>"><%= rank %></a></li>
+					<% 
+						}
+					%>
 				</ol>
 			</div>
 		</div>
@@ -153,10 +165,26 @@
 					<h6>뉴스토픽</h6>
 					<hr>
 					<ul id = "news1">
-						<li id = "news1">카리스마 조장 "HTML 너무 쉬워.. 더 어려운게 필요해.."</li>
-						<li id = "news1">정보관리책임 본부장 "실시간 차트 더욱 편하게 만들겠다.."호언장담.</li>
-						<li id = "news1">대표이사 사퇴 의사 밝혀..다음 대표이사 후보는 누구?</li>
-						<li id = "news1">탤런트 D군 예비군에서 연락 끊겨..검찰 "탈주 여부 조사중.."</li>
+						<%
+							String url2 = "https://www.genie.co.kr/magazine?ctid=1";
+							try {
+								doc = Jsoup.connect(url2).get();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+				
+							element = doc.select("div.list-normal");
+							int i=0;
+							for(Element el : element.select("div.info > p")){
+								if(i < 4){
+								String news = el.text();//뉴스 타이틀
+								i++;
+						%>
+					 		<li id = "news1"><a href="Magazine.jsp"><%= news %></a></li> 
+						<%
+								}
+							}
+						%>
 					</ul>
 				</div>
 			</div>
